@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Supplier;
@@ -64,6 +65,7 @@ public class Archive {
             System.out.println("6 - Search by year");
             System.out.println("7 - Search a book by author");
             System.out.println("8 - Save data");
+            System.out.println("9 - Read a file from disc");
             System.out.println("0 - Terminate the program.");
 
             handleAction = sc.nextInt();
@@ -119,6 +121,21 @@ public class Archive {
                     String filePath = "src/main/data/" + nameFile + ".txt";
 
                     saveElementsOnDisc(bookList, magazineList, typeOfData, filePath);
+                    break;
+
+                case 9:
+                    System.out.println("Insert the name of the file you want to read:");
+                    String nameFileToRead = sc.nextLine();
+
+                    String filePathToRead = "src/main/data/" + nameFileToRead + ".txt";
+
+                    try {
+                        System.out.println("Data from file: " + nameFileToRead);
+                        loadBooksFromDisk(filePathToRead).forEach(System.out::println);
+
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
 
                 case 0:
@@ -232,8 +249,7 @@ public class Archive {
 
             case 1:
                 for (Book book : bookList) {
-                    dataToWrite += "Book@"
-                            + book.getISBN() + ","
+                    dataToWrite += book.getISBN() + ","
                             + book.getTitle() + ","
                             + book.getReleaseDate() + ","
                             + book.getNumberPages() + ","
@@ -245,8 +261,7 @@ public class Archive {
 
             case 2:
                 for (Magazine magazine : magazineList) {
-                    dataToWrite += "Magazine@"
-                            + magazine.getISBN() + ","
+                    dataToWrite += magazine.getISBN() + ","
                             + magazine.getTitle() + ","
                             + magazine.getReleaseDate() + ","
                             + magazine.getNumberPages() + ","
@@ -268,5 +283,28 @@ public class Archive {
         }
     }
 
+    //read data
+    public static List<Book> loadBooksFromDisk(String filePath) throws IOException {
+        File file = new File(filePath);
+
+        try {
+            String fileString = FileUtils.readFileToString(file, "UTF-8");
+
+            List<String> splitElementString = Arrays.asList(fileString.split("◥█̆̈◤࿉∥"));
+
+            return splitElementString.stream().map(textData -> {
+                String[] elementInfo = textData.split(",");
+
+                return new Book(elementInfo[0], elementInfo[1],
+                        Integer.parseInt(elementInfo[2]),
+                        Integer.parseInt(elementInfo[3]),
+                        elementInfo[4], elementInfo[5]);
+            }).toList();
+
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage() + " make sure that the file exists.");
+            return new ArrayList<>();
+        }
+    }
 
 }

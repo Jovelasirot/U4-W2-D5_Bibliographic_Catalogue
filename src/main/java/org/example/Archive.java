@@ -2,6 +2,7 @@ package org.example;
 
 import com.github.javafaker.Faker;
 import entities.Book;
+import entities.Catalog;
 import entities.Frequency;
 import entities.Magazine;
 
@@ -23,10 +24,10 @@ public class Archive {
             bookList.add(bookSupplier.get());
         }
 
-        System.out.println("List of book:");
-        bookList.forEach(System.out::println);
+//        System.out.println("List of book:");
+//        bookList.forEach(System.out::println);
 
-        System.out.println("-----------------------");
+//        System.out.println("-----------------------");
 
         Supplier<Magazine> magazineSupplier = getMagazineSupplier();
         List<Magazine> magazineList = new ArrayList<>();
@@ -34,10 +35,10 @@ public class Archive {
             magazineList.add(magazineSupplier.get());
         }
 
-        System.out.println("List of magazines:");
-        magazineList.forEach(System.out::println);
+//        System.out.println("List of magazines:");
+//        magazineList.forEach(System.out::println);
 
-        System.out.println("----------------------------------------------------");
+//        System.out.println("----------------------------------------------------");
 
         handleUserActions(bookList, magazineList);
     }
@@ -47,10 +48,14 @@ public class Archive {
         Scanner sc = new Scanner(System.in);
         int handleAction;
         do {
-            System.out.println("What type of element do you want to add?");
-            System.out.println("1 - Book");
-            System.out.println("2 - Magazine");
+            System.out.println("What do you want to do?");
+            System.out.println("1 - Add book");
+            System.out.println("2 - Add magazine");
             System.out.println("3 - Remove based on ISBN");
+            System.out.println("4 - View book list");
+            System.out.println("5 - View magazine list");
+            System.out.println("6 - Search by year");
+            System.out.println("7 - Search a book by author");
             System.out.println("0 - Terminate the program.");
 
             handleAction = sc.nextInt();
@@ -60,16 +65,43 @@ public class Archive {
                 case 1:
                     addBook(bookList);
                     break;
+
                 case 2:
                     addMagazine(magazineList);
                     break;
+
                 case 3:
                     System.out.println("Enter ISBN to remove:");
                     String isbnToRemove = sc.nextLine();
                     removeByIsbn(bookList, magazineList, isbnToRemove);
+                    break;
+
+                case 4:
+                    System.out.println("Current book list:");
+                    bookList.forEach(System.out::println);
+                    break;
+
+                case 5:
+                    System.out.println("Current magazine list:");
+                    magazineList.forEach(System.out::println);
+                    break;
+
+                case 6:
+                    System.out.println("Enter a year:");
+                    int yearToSearch = sc.nextInt();
+                    System.out.println(searchByReleaseDate(bookList, magazineList, yearToSearch));
+                    break;
+
+                case 7:
+                    System.out.println("Enter the name of the Author:");
+                    String authorToSearch = sc.nextLine();
+                    System.out.println(searchByAuthor(bookList, authorToSearch));
+                    break;
+
                 case 0:
                     System.out.println("Terminating program... =͟͟͞͞ =͟͟͞͞ ﾍ ( ´ Д `)ﾉ");
                     break;
+
                 default:
                     System.out.println("Invalid action. Please try again.");
                     break;
@@ -147,5 +179,24 @@ public class Archive {
         magazineList.removeIf(magazine -> magazine.getISBN().equals(isbnInput));
     }
 
+    //    search by release year
+    public static List<Catalog> searchByReleaseDate(List<Book> bookList, List<Magazine> magazineList, int yearInput) {
+        List<Catalog> results = new ArrayList<>();
+
+        results.addAll(bookList.stream().filter(book -> book.getReleaseDate() == yearInput).toList());
+
+        results.addAll(magazineList.stream().filter(magazine -> magazine.getReleaseDate() == yearInput).toList());
+
+        return results;
+    }
+
+    public static List<Catalog> searchByAuthor(List<Book> bookList, String authorInput) {
+        List<Catalog> results = new ArrayList<>();
+
+        results.addAll(bookList.stream().filter(book -> book.getAuthor().equals(authorInput)).toList());
+
+
+        return results;
+    }
 
 }

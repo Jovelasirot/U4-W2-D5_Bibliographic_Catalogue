@@ -63,7 +63,7 @@ public class Archive {
                 System.out.println("5 - View magazine list");
                 System.out.println("6 - Search by year");
                 System.out.println("7 - Search a book by author");
-                System.out.println("8 - Save data");
+                System.out.println("8 - Save data on disc");
                 System.out.println("9 - Read a file from disc");
                 System.out.println("10 - View the entire catalog");
                 System.out.println("0 - Terminate the program.");
@@ -180,6 +180,7 @@ public class Archive {
 
         System.out.println("List of books updated:");
         bookList.forEach(System.out::println);
+        System.out.println("-------------------------");
     }
 
     public static void addMagazine(List<Magazine> magazineList) {
@@ -210,6 +211,7 @@ public class Archive {
 
         System.out.println("List of magazines updated:");
         magazineList.forEach(System.out::println);
+        System.out.println("-------------------------");
     }
 
     // remove element
@@ -249,11 +251,11 @@ public class Archive {
 
             case 1:
                 for (Book book : bookList) {
-                    dataToWrite += book.getISBN() + ","
-                            + book.getTitle() + ","
-                            + book.getReleaseDate() + ","
-                            + book.getNumberPages() + ","
-                            + book.getAuthor() + ","
+                    dataToWrite += book.getISBN() + "☝"
+                            + book.getTitle() + "☝"
+                            + book.getReleaseDate() + "☝"
+                            + book.getNumberPages() + "☝"
+                            + book.getAuthor() + "☝"
                             + book.getGenre()
                             + "◥█̆̈◤࿉∥";
                 }
@@ -261,10 +263,10 @@ public class Archive {
 
             case 2:
                 for (Magazine magazine : magazineList) {
-                    dataToWrite += magazine.getISBN() + ","
-                            + magazine.getTitle() + ","
-                            + magazine.getReleaseDate() + ","
-                            + magazine.getNumberPages() + ","
+                    dataToWrite += magazine.getISBN() + "☝"
+                            + magazine.getTitle() + "☝"
+                            + magazine.getReleaseDate() + "☝"
+                            + magazine.getNumberPages() + "☝"
                             + magazine.getFrequency()
                             + "◥█̆̈◤࿉∥";
 
@@ -335,7 +337,7 @@ public class Archive {
             List<String> splitElementString = Arrays.asList(fileString.split("◥█̆̈◤࿉∥"));
 
             return splitElementString.stream().map(textData -> {
-                String[] elementInfo = textData.split(",");
+                String[] elementInfo = textData.split("☝");
 
                 return new Book(elementInfo[0], elementInfo[1],
                         Integer.parseInt(elementInfo[2]),
@@ -358,7 +360,7 @@ public class Archive {
             List<String> splitElementString = Arrays.asList(fileString.split("◥█̆̈◤࿉∥"));
 
             return splitElementString.stream().map(textData -> {
-                String[] elementInfo = textData.split(",");
+                String[] elementInfo = textData.split("☝");
 
                 return new Magazine(elementInfo[0], elementInfo[1],
                         Integer.parseInt(elementInfo[2]),

@@ -5,7 +5,10 @@ import entities.Book;
 import entities.Catalog;
 import entities.Frequency;
 import entities.Magazine;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -40,11 +43,15 @@ public class Archive {
 
 //        System.out.println("----------------------------------------------------");
 
-        handleUserActions(bookList, magazineList);
+        List<Catalog> catalogList = new ArrayList<>();
+        catalogList.addAll(bookList);
+        catalogList.addAll(magazineList);
+
+        handleUserActions(bookList, magazineList, catalogList);
     }
 
     //   user actions
-    public static void handleUserActions(List<Book> bookList, List<Magazine> magazineList) {
+    public static void handleUserActions(List<Book> bookList, List<Magazine> magazineList, List<Catalog> catalogList) {
         Scanner sc = new Scanner(System.in);
         int handleAction;
         do {
@@ -56,6 +63,7 @@ public class Archive {
             System.out.println("5 - View magazine list");
             System.out.println("6 - Search by year");
             System.out.println("7 - Search a book by author");
+            System.out.println("8 - Save data");
             System.out.println("0 - Terminate the program.");
 
             handleAction = sc.nextInt();
@@ -96,6 +104,21 @@ public class Archive {
                     System.out.println("Enter the name of the Author:");
                     String authorToSearch = sc.nextLine();
                     System.out.println(searchByAuthor(bookList, authorToSearch));
+                    break;
+
+                case 8:
+                    System.out.println("What type do want to save:");
+                    System.out.println("1 - Books");
+                    System.out.println("2 - Magazine");
+                    int typeOfData = sc.nextInt();
+
+                    sc.nextLine();
+
+                    System.out.println("Save file as:");
+                    String nameFile = sc.nextLine();
+                    String filePath = "src/main/data/" + nameFile + ".txt";
+
+                    saveElementsOnDisc(bookList, magazineList, typeOfData, filePath);
                     break;
 
                 case 0:
@@ -190,6 +213,7 @@ public class Archive {
         return results;
     }
 
+    //    search by author
     public static List<Catalog> searchByAuthor(List<Book> bookList, String authorInput) {
         List<Catalog> results = new ArrayList<>();
 
@@ -198,5 +222,51 @@ public class Archive {
 
         return results;
     }
+
+    //    save data
+    public static void saveElementsOnDisc(List<Book> bookList, List<Magazine> magazineList, int typeOfData, String filePath) {
+        File file = new File(filePath);
+        String dataToWrite = "";
+
+        switch (typeOfData) {
+
+            case 1:
+                for (Book book : bookList) {
+                    dataToWrite += "Book@"
+                            + book.getISBN() + ","
+                            + book.getTitle() + ","
+                            + book.getReleaseDate() + ","
+                            + book.getNumberPages() + ","
+                            + book.getAuthor() + ","
+                            + book.getGenre()
+                            + "◥█̆̈◤࿉∥";
+                }
+                break;
+
+            case 2:
+                for (Magazine magazine : magazineList) {
+                    dataToWrite += "Magazine@"
+                            + magazine.getISBN() + ","
+                            + magazine.getTitle() + ","
+                            + magazine.getReleaseDate() + ","
+                            + magazine.getNumberPages() + ","
+                            + magazine.getFrequency()
+                            + "◥█̆̈◤࿉∥";
+
+                }
+                break;
+
+            default:
+                System.out.println("Invalid type of data");
+        }
+
+        try {
+            FileUtils.writeStringToFile(file, dataToWrite.toString(), "UTF-8");
+            System.out.println("Data saved to file: " + filePath);
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
 
 }

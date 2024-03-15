@@ -25,21 +25,11 @@ public class Archive {
             bookList.add(bookSupplier.get());
         }
 
-//        System.out.println("List of book:");
-//        bookList.forEach(System.out::println);
-
-//        System.out.println("-----------------------");
-
         Supplier<Magazine> magazineSupplier = getMagazineSupplier();
         List<Magazine> magazineList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             magazineList.add(magazineSupplier.get());
         }
-
-//        System.out.println("List of magazines:");
-//        magazineList.forEach(System.out::println);
-
-//        System.out.println("----------------------------------------------------");
 
         List<Catalog> catalogList = new ArrayList<>();
         catalogList.addAll(bookList);
@@ -55,6 +45,7 @@ public class Archive {
         do {
             try {
 
+                System.out.println();
                 System.out.println("What do you want to do?");
                 System.out.println("1 - Add book");
                 System.out.println("2 - Add magazine");
@@ -109,9 +100,10 @@ public class Archive {
                         break;
 
                     case 8:
-                        System.out.println("What type do want to save:");
+                        System.out.println("What do you want to save:");
                         System.out.println("1 - Books");
                         System.out.println("2 - Magazine");
+                        System.out.println("3 - Save full Catalog");
                         int typeOfData = sc.nextInt();
 
                         sc.nextLine();
@@ -134,7 +126,7 @@ public class Archive {
                         break;
 
                     case 0:
-                        System.out.println("Terminating program... =͟͟͞͞ =͟͟͞͞ ﾍ ( ´ Д `)ﾉ");
+                        System.out.println("Terminating program =͟͟͞͞ =͟͟͞͞ ﾍ ( ´ Д `)ﾉ");
                         break;
 
                     default:
@@ -164,8 +156,15 @@ public class Archive {
         System.out.println("Release date of the book:");
         int releaseDate = sc.nextInt();
 
-        System.out.println("Number of pages of the book:");
-        int numberOfPages = sc.nextInt();
+
+        int numberOfPages;
+        do {
+            System.out.println("Number of pages of the book:");
+            numberOfPages = sc.nextInt();
+            if (numberOfPages < 5) {
+                System.out.println("The book needs to have at least five pages, try again.");
+            }
+        } while (numberOfPages < 5);
 
         sc.nextLine();
 
@@ -195,8 +194,14 @@ public class Archive {
         System.out.println("Release date of the magazine:");
         int releaseDate = sc.nextInt();
 
-        System.out.println("Number of pages of the magazine:");
-        int numberOfPages = sc.nextInt();
+        int numberOfPages;
+        do {
+            System.out.println("Number of pages of the magazine:");
+            numberOfPages = sc.nextInt();
+            if (numberOfPages < 5) {
+                System.out.println("The magazine needs to have at least five pages, try again.");
+            }
+        } while (numberOfPages < 5);
 
         System.out.println("Select frequency for the magazine:");
         System.out.println("1 - WEEKLY");
@@ -273,6 +278,26 @@ public class Archive {
                 }
                 break;
 
+            case 3:
+                for (Magazine magazine : magazineList) {
+                    dataToWrite += "magazine" + "☝" + magazine.getISBN() + "☝"
+                            + magazine.getTitle() + "☝"
+                            + magazine.getReleaseDate() + "☝"
+                            + magazine.getNumberPages() + "☝"
+                            + magazine.getFrequency()
+                            + "◥█̆̈◤࿉∥";
+                }
+                for (Book book : bookList) {
+                    dataToWrite += "book" + "☝" + book.getISBN() + "☝"
+                            + book.getTitle() + "☝"
+                            + book.getReleaseDate() + "☝"
+                            + book.getNumberPages() + "☝"
+                            + book.getAuthor() + "☝"
+                            + book.getGenre()
+                            + "◥█̆̈◤࿉∥";
+                }
+                break;
+
             default:
                 System.out.println("Invalid type of data");
         }
@@ -289,7 +314,8 @@ public class Archive {
     //read data
     public static void handleLoadFromDisk() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Do You want to load book (B) or magazine (M)");
+        System.out.println("Do You want to load");
+        System.out.println("book (B) - magazine (M) - catalog (C) ");
 
         String dataFileInput = sc.nextLine();
 
@@ -301,7 +327,7 @@ public class Archive {
 
             try {
                 System.out.println("Data from file: " + nameFileToRead);
-                loadBooksFromDisk(filePathToRead).forEach(System.out::println);
+                loadBooksFromDisc(filePathToRead).forEach(System.out::println);
                 System.out.println("---------------------------");
 
             } catch (IOException e) {
@@ -316,19 +342,35 @@ public class Archive {
 
             try {
                 System.out.println("Data from file: " + nameFileToRead);
-                loadMagazineFromDisk(filePathToRead).forEach(System.out::println);
+                loadMagazineFromDisc(filePathToRead).forEach(System.out::println);
                 System.out.println("---------------------------");
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+
+        } else if (Objects.equals(dataFileInput, "C")) {
+            System.out.println("Insert the name of the file(Catalog) you want to load:");
+            String nameFileToRead = sc.nextLine();
+
+            String filePathToRead = "src/main/data/" + nameFileToRead + ".txt";
+
+            try {
+                System.out.println("Data from file: " + nameFileToRead);
+                loadCatalogFromDisc(filePathToRead).forEach(System.out::println);
+                System.out.println("---------------------------");
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         } else {
             System.out.println("Invalid input.");
         }
     }
 
 
-    public static List<Book> loadBooksFromDisk(String filePath) throws IOException {
+    public static List<Book> loadBooksFromDisc(String filePath) throws IOException {
         File file = new File(filePath);
 
         try {
@@ -351,7 +393,7 @@ public class Archive {
         }
     }
 
-    public static List<Magazine> loadMagazineFromDisk(String filePath) throws IOException {
+    public static List<Magazine> loadMagazineFromDisc(String filePath) throws IOException {
         File file = new File(filePath);
 
         try {
@@ -372,6 +414,39 @@ public class Archive {
             System.out.println("Error reading file: " + e.getMessage() + " make sure that the file exists.");
             return new ArrayList<>();
         }
+    }
+
+    public static List<Catalog> loadCatalogFromDisc(String filePath) throws IOException {
+        File file = new File(filePath);
+        List<Catalog> catalogList = new ArrayList<>();
+
+        try {
+            String fileString = FileUtils.readFileToString(file, "UTF-8");
+
+            List<String> splitElementString = Arrays.asList(fileString.split("◥█̆̈◤࿉∥"));
+
+            for (String textData : splitElementString) {
+                String[] elementInfo = textData.split("☝");
+
+                if (elementInfo[0].equals("book")) {
+                    Book book = new Book(elementInfo[1], elementInfo[2],
+                            Integer.parseInt(elementInfo[3]),
+                            Integer.parseInt(elementInfo[4]),
+                            elementInfo[5], elementInfo[6]);
+                    catalogList.add(book);
+                } else if (elementInfo[0].equals("magazine")) {
+                    Magazine magazine = new Magazine(elementInfo[1], elementInfo[2],
+                            Integer.parseInt(elementInfo[3]),
+                            Integer.parseInt(elementInfo[4]),
+                            elementInfo[5]);
+                    catalogList.add(magazine);
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage() + " make sure that the file exists.");
+        }
+        return catalogList;
     }
 
 }

@@ -1,6 +1,6 @@
 package entities;
 
-public abstract class Catalog {
+public class Catalog {
     private String ISBN;
     private String title;
     private int releaseDate;

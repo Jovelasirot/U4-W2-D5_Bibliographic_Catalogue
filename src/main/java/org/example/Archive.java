@@ -9,10 +9,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static entities.Book.getBookSupplier;
@@ -124,18 +121,7 @@ public class Archive {
                     break;
 
                 case 9:
-                    System.out.println("Insert the name of the file you want to read:");
-                    String nameFileToRead = sc.nextLine();
-
-                    String filePathToRead = "src/main/data/" + nameFileToRead + ".txt";
-
-                    try {
-                        System.out.println("Data from file: " + nameFileToRead);
-                        loadBooksFromDisk(filePathToRead).forEach(System.out::println);
-
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handleLoadFromDisk();
                     break;
 
                 case 0:
@@ -283,7 +269,47 @@ public class Archive {
         }
     }
 
+
     //read data
+    public static void handleLoadFromDisk() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Do You want to load book (B) or magazine (M)");
+
+        String dataFileInput = sc.nextLine();
+
+        if (Objects.equals(dataFileInput, "B")) {
+            System.out.println("Insert the name of the file(Book) you want to read:");
+            String nameFileToRead = sc.nextLine();
+
+            String filePathToRead = "src/main/data/" + nameFileToRead + ".txt";
+
+            try {
+                System.out.println("Data from file: " + nameFileToRead);
+                loadBooksFromDisk(filePathToRead).forEach(System.out::println);
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        } else if (Objects.equals(dataFileInput, "M")) {
+            System.out.println("Insert the name of the file(Magazine) you want to read:");
+            String nameFileToRead = sc.nextLine();
+
+            String filePathToRead = "src/main/data/" + nameFileToRead + ".txt";
+
+            try {
+                System.out.println("Data from file: " + nameFileToRead);
+                loadMagazineFromDisk(filePathToRead).forEach(System.out::println);
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            System.out.println("Invalid input.");
+        }
+    }
+
+
     public static List<Book> loadBooksFromDisk(String filePath) throws IOException {
         File file = new File(filePath);
 
@@ -299,6 +325,29 @@ public class Archive {
                         Integer.parseInt(elementInfo[2]),
                         Integer.parseInt(elementInfo[3]),
                         elementInfo[4], elementInfo[5]);
+            }).toList();
+
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage() + " make sure that the file exists.");
+            return new ArrayList<>();
+        }
+    }
+
+    public static List<Magazine> loadMagazineFromDisk(String filePath) throws IOException {
+        File file = new File(filePath);
+
+        try {
+            String fileString = FileUtils.readFileToString(file, "UTF-8");
+
+            List<String> splitElementString = Arrays.asList(fileString.split("◥█̆̈◤࿉∥"));
+
+            return splitElementString.stream().map(textData -> {
+                String[] elementInfo = textData.split(",");
+
+                return new Magazine(elementInfo[0], elementInfo[1],
+                        Integer.parseInt(elementInfo[2]),
+                        Integer.parseInt(elementInfo[3]),
+                        elementInfo[4]);
             }).toList();
 
         } catch (IOException e) {

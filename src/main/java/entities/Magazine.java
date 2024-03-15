@@ -9,9 +9,16 @@ public class Magazine extends Catalog {
 
     private Frequency frequency;
 
+    private String frequencyFromFile;
+
     public Magazine(String ISBN, String title, int releaseDate, int numberPages, Frequency frequency) {
         super(ISBN, title, releaseDate, numberPages);
         this.frequency = frequency;
+    }
+
+    public Magazine(String ISBN, String title, int releaseDate, int numberPages, String frequencyFromFile) {
+        super(ISBN, title, releaseDate, numberPages);
+        this.frequencyFromFile = frequencyFromFile;
     }
 
     public static Supplier<Magazine> getMagazineSupplier() {

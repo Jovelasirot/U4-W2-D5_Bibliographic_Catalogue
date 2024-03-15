@@ -53,86 +53,100 @@ public class Archive {
         Scanner sc = new Scanner(System.in);
         int handleAction;
         do {
-            System.out.println("What do you want to do?");
-            System.out.println("1 - Add book");
-            System.out.println("2 - Add magazine");
-            System.out.println("3 - Remove based on ISBN");
-            System.out.println("4 - View book list");
-            System.out.println("5 - View magazine list");
-            System.out.println("6 - Search by year");
-            System.out.println("7 - Search a book by author");
-            System.out.println("8 - Save data");
-            System.out.println("9 - Read a file from disc");
-            System.out.println("0 - Terminate the program.");
+            try {
 
-            handleAction = sc.nextInt();
-            sc.nextLine();
+                System.out.println("What do you want to do?");
+                System.out.println("1 - Add book");
+                System.out.println("2 - Add magazine");
+                System.out.println("3 - Remove based on ISBN");
+                System.out.println("4 - View book list");
+                System.out.println("5 - View magazine list");
+                System.out.println("6 - Search by year");
+                System.out.println("7 - Search a book by author");
+                System.out.println("8 - Save data");
+                System.out.println("9 - Read a file from disc");
+                System.out.println("10 - View the entire catalog");
+                System.out.println("0 - Terminate the program.");
 
-            switch (handleAction) {
-                case 1:
-                    addBook(bookList);
-                    break;
+                handleAction = sc.nextInt();
+                sc.nextLine();
 
-                case 2:
-                    addMagazine(magazineList);
-                    break;
+                switch (handleAction) {
+                    case 1:
+                        addBook(bookList);
+                        break;
 
-                case 3:
-                    System.out.println("Enter ISBN to remove:");
-                    String isbnToRemove = sc.nextLine();
-                    removeByIsbn(bookList, magazineList, isbnToRemove);
-                    break;
+                    case 2:
+                        addMagazine(magazineList);
+                        break;
 
-                case 4:
-                    System.out.println("Current book list:");
-                    bookList.forEach(System.out::println);
-                    break;
+                    case 3:
+                        System.out.println("Enter ISBN to remove:");
+                        String isbnToRemove = sc.nextLine();
+                        removeByIsbn(bookList, magazineList, isbnToRemove);
+                        break;
 
-                case 5:
-                    System.out.println("Current magazine list:");
-                    magazineList.forEach(System.out::println);
-                    break;
+                    case 4:
+                        System.out.println("Current book list:");
+                        bookList.forEach(System.out::println);
+                        break;
 
-                case 6:
-                    System.out.println("Enter a year:");
-                    int yearToSearch = sc.nextInt();
-                    System.out.println(searchByReleaseDate(bookList, magazineList, yearToSearch));
-                    break;
+                    case 5:
+                        System.out.println("Current magazine list:");
+                        magazineList.forEach(System.out::println);
+                        break;
 
-                case 7:
-                    System.out.println("Enter the name of the Author:");
-                    String authorToSearch = sc.nextLine();
-                    System.out.println(searchByAuthor(bookList, authorToSearch));
-                    break;
+                    case 6:
+                        System.out.println("Enter a year:");
+                        int yearToSearch = sc.nextInt();
+                        System.out.println(searchByReleaseDate(bookList, magazineList, yearToSearch));
+                        break;
 
-                case 8:
-                    System.out.println("What type do want to save:");
-                    System.out.println("1 - Books");
-                    System.out.println("2 - Magazine");
-                    int typeOfData = sc.nextInt();
+                    case 7:
+                        System.out.println("Enter the name of the Author:");
+                        String authorToSearch = sc.nextLine();
+                        System.out.println(searchByAuthor(bookList, authorToSearch));
+                        break;
 
-                    sc.nextLine();
+                    case 8:
+                        System.out.println("What type do want to save:");
+                        System.out.println("1 - Books");
+                        System.out.println("2 - Magazine");
+                        int typeOfData = sc.nextInt();
 
-                    System.out.println("Save file as:");
-                    String nameFile = sc.nextLine();
-                    String filePath = "src/main/data/" + nameFile + ".txt";
+                        sc.nextLine();
 
-                    saveElementsOnDisc(bookList, magazineList, typeOfData, filePath);
-                    break;
+                        System.out.println("Save file as:");
+                        String nameFile = sc.nextLine();
+                        String filePath = "src/main/data/" + nameFile + ".txt";
 
-                case 9:
-                    handleLoadFromDisk();
-                    break;
+                        saveElementsOnDisc(bookList, magazineList, typeOfData, filePath);
+                        break;
 
-                case 0:
-                    System.out.println("Terminating program... =͟͟͞͞ =͟͟͞͞ ﾍ ( ´ Д `)ﾉ");
-                    break;
+                    case 9:
+                        handleLoadFromDisk();
+                        break;
 
-                default:
-                    System.out.println("Invalid action. Please try again.");
-                    break;
+                    case 10:
+                        System.out.println("The entire catalog:");
+                        catalogList.forEach(System.out::println);
+                        System.out.println("---------------------------");
+                        break;
+
+                    case 0:
+                        System.out.println("Terminating program... =͟͟͞͞ =͟͟͞͞ ﾍ ( ´ Д `)ﾉ");
+                        break;
+
+                    default:
+                        System.out.println("Invalid action. Please try again.");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input, type a number.");
+                System.out.println("-------------");
+                handleAction = -1;
+                sc.nextLine();
             }
-
         } while (handleAction != 0);
         sc.close();
     }
@@ -278,7 +292,7 @@ public class Archive {
         String dataFileInput = sc.nextLine();
 
         if (Objects.equals(dataFileInput, "B")) {
-            System.out.println("Insert the name of the file(Book) you want to read:");
+            System.out.println("Insert the name of the file(Book) you want to load:");
             String nameFileToRead = sc.nextLine();
 
             String filePathToRead = "src/main/data/" + nameFileToRead + ".txt";
@@ -286,13 +300,14 @@ public class Archive {
             try {
                 System.out.println("Data from file: " + nameFileToRead);
                 loadBooksFromDisk(filePathToRead).forEach(System.out::println);
+                System.out.println("---------------------------");
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
         } else if (Objects.equals(dataFileInput, "M")) {
-            System.out.println("Insert the name of the file(Magazine) you want to read:");
+            System.out.println("Insert the name of the file(Magazine) you want to load:");
             String nameFileToRead = sc.nextLine();
 
             String filePathToRead = "src/main/data/" + nameFileToRead + ".txt";
@@ -300,6 +315,7 @@ public class Archive {
             try {
                 System.out.println("Data from file: " + nameFileToRead);
                 loadMagazineFromDisk(filePathToRead).forEach(System.out::println);
+                System.out.println("---------------------------");
 
             } catch (IOException e) {
                 throw new RuntimeException(e);

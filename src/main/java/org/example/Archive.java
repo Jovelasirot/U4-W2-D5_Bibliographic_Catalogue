@@ -438,6 +438,7 @@ public class Archive {
                     Magazine magazine = new Magazine(elementInfo[1], elementInfo[2],
                             Integer.parseInt(elementInfo[3]),
                             Integer.parseInt(elementInfo[4]),
+//                            Frequency.valueOf(elementInfo[5])
                             elementInfo[5]);
                     catalogList.add(magazine);
                 }

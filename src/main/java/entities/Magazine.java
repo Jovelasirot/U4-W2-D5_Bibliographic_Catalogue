@@ -9,7 +9,6 @@ public class Magazine extends Catalog {
 
     private Frequency frequency;
 
-    private String frequencyFromFile;
 
     public Magazine(String ISBN, String title, int releaseDate, int numberPages, Frequency frequency) {
         super(ISBN, title, releaseDate, numberPages);
@@ -18,17 +17,17 @@ public class Magazine extends Catalog {
 
     public Magazine(String ISBN, String title, int releaseDate, int numberPages, String frequencyFromFile) {
         super(ISBN, title, releaseDate, numberPages);
-        this.frequencyFromFile = frequencyFromFile;
+        this.frequency = Frequency.valueOf(frequencyFromFile);
     }
 
     public static Supplier<Magazine> getMagazineSupplier() {
         Random rdm = new Random();
         Faker faker = new Faker();
         Frequency[] frequencies = Frequency.values();
-        int rdmFrequency = rdm.nextInt(frequencies.length);
 
 
         return () -> {
+            int rdmFrequency = rdm.nextInt(frequencies.length);
             String isbn = faker.code().isbn10();
             String title = faker.book().title();
             int releaseDate = rdm.nextInt(1950, 2024);
